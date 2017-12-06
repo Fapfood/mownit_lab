@@ -1,0 +1,11 @@
+cooling_schedule:
+functools.partial(<function linear_additive_cooling at 0x0000000005053598>, cooling_rate=1e-05)
+starting_state_generator:
+functools.partial(<function clique_city_init at 0x0000000005053840>, n=100, k=2)
+neighbour_candidate_generator:
+<function consecutive_city_swapping_candidate at 0x00000000050539D8>
+
+starting_energy:
+452508.9375259351
+best_energy:
+290379.43677422503

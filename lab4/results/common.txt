@@ -1,0 +1,4 @@
+starting_temperature:
+100
+problem_params:
+(<function cities_swap at 0x0000000005053A60>, <function get_distance at 0x00000000050538C8>, <function cities_copy at 0x0000000005053AE8>, 0)

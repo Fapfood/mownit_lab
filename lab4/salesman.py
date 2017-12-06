@@ -1,7 +1,9 @@
 from functools import partial
 from random import randrange, shuffle
-from lab4.lab4 import exponential_multiplicative_cooling, simulated_annealing, linear_additive_cooling
+
 import matplotlib.pyplot as plt
+
+from lab4 import exponential_multiplicative_cooling, linear_additive_cooling, Cases, test_cases
 
 MAP_DIMENSION = 200
 
@@ -18,7 +20,7 @@ class City:
         return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** (1 / 2)
 
 
-def test_city_init():
+def example_city_init():
     tour = [City(60, 200),
             City(180, 200),
             City(80, 180),
@@ -86,13 +88,13 @@ def cities_copy(tour):
     return tour.copy()
 
 
-def plot(tour1, tour2):
+def plot(tour1, tour2, dir_path):
     x1 = [city.x for city in tour1]
     y1 = [city.y for city in tour1]
 
     plt.plot(x1, y1, 'co')
 
-    a_scale = float(max(x1)) / float(60)
+    a_scale = max(x1) / 100
 
     for i in range(len(x1)):
         plt.arrow(x1[i - 1], y1[i - 1], x1[i] - x1[i - 1], y1[i] - y1[i - 1],
@@ -105,25 +107,26 @@ def plot(tour1, tour2):
         plt.arrow(x2[i - 1], y2[i - 1], x2[i] - x2[i - 1], y2[i] - y2[i - 1],
                   head_width=a_scale, color='r', length_includes_head=True)
 
-    plt.xlim(min(x1) * 0.9, max(x1) * 1.1)
-    plt.ylim(min(x1) * 0.9, max(y1) * 1.1)
-    plt.show()
+    margin = a_scale
+    plt.xlim(min(x1) - margin, max(x1) + margin)
+    plt.ylim(min(y1) - margin, max(y1) + margin)
+    plt.savefig(dir_path + '/start_vs_best.png')
+    plt.clf()
 
 
 if __name__ == '__main__':
-    starting_tour = clique_city_init(100, 3)
-    t0 = 20
-    fun1 = partial(exponential_multiplicative_cooling, cooling_rate=0.000005)
-    fun2 = partial(linear_additive_cooling, cooling_rate=0.00001)
-    best, energy_mem = simulated_annealing((t0, fun2),
-                                           (starting_tour, arbitrary_city_swapping_candidate),
-                                           (cities_swap, get_distance, cities_copy, 0))
+    starting_tour_generator_1 = partial(clique_city_init, n=100, k=1)
+    starting_tour_generator_2 = partial(clique_city_init, n=100, k=2)
+    starting_tour_generator_3 = partial(clique_city_init, n=100, k=3)
+    starting_tour_generators = [starting_tour_generator_1, starting_tour_generator_2, starting_tour_generator_3]
 
-    print(starting_tour)
-    print(get_distance(starting_tour))
-    print(best)
-    print(get_distance(best))
-    plot(starting_tour, best)
+    t0 = 100
+    cooling_schedule_1 = partial(exponential_multiplicative_cooling, cooling_rate=0.000001)
+    cooling_schedule_2 = partial(linear_additive_cooling, cooling_rate=0.00001)
+    cooling_schedules = [cooling_schedule_1, cooling_schedule_2]
 
-    plt.plot(energy_mem)
-    plt.show()
+    neighbour_candidate_generators = [arbitrary_city_swapping_candidate, consecutive_city_swapping_candidate]
+    problem_params = (cities_swap, get_distance, cities_copy, 0)
+
+    cases = Cases(cooling_schedules, neighbour_candidate_generators, starting_tour_generators, t0, problem_params, plot)
+    test_cases(cases)

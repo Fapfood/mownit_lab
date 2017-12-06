@@ -1,7 +1,7 @@
 from random import randrange
 from skimage import io
 from functools import partial
-from lab4.lab4 import exponential_multiplicative_cooling, simulated_annealing, linear_additive_cooling
+from lab4 import exponential_multiplicative_cooling, simulated_annealing, linear_additive_cooling
 import matplotlib.pyplot as plt
 
 
