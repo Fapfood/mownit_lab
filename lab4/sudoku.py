@@ -115,48 +115,85 @@ class Sudoku:
 
 
 def arbitrary_swapping_candidate(sudoku):
-    # while True:
-    #     _type = random.randrange(3)
-    #     if _type == 0:
-    #         i = random.randrange(9)
-    #         y = i // 3 * 3
-    #         x = i % 3 * 3
-    #         j = random.randrange(y, y + 3)
-    #         k = random.randrange(x, x + 3)
-    #         b, val = sudoku.board[j][k]
-    #         if not b and sudoku.metadict['s'][i][val] > 1:
-    #             old = j, k
-    #             break
-    #     elif _type == 1:
-    #         y = random.randrange(9)
-    #         x = random.randrange(9)
-    #         b, val = sudoku.board[y][x]
-    #         if not b and sudoku.metadict['r'][y][val] > 1:
-    #             old = y, x
-    #             break
-    #     else:
-    #         y = random.randrange(9)
-    #         x = random.randrange(9)
-    #         b, val = sudoku.board[y][x]
-    #         if not b and sudoku.metadict['c'][x][val] > 1:
-    #             old = y, x
-    #             break
-
+    counter = 0
+    breakpoint = 20
     while True:
-        y = random.randrange(9)
-        x = random.randrange(9)
-        if not sudoku.board[y][x][0]:
-            old = y, x
+        counter += 1
+        _type = random.randrange(3)
+        if _type == 0:
+            i = random.randrange(9)
+            y = i // 3 * 3
+            x = i % 3 * 3
+            j = random.randrange(y, y + 3)
+            k = random.randrange(x, x + 3)
+            b, val = sudoku.board[j][k]
+            if not b and sudoku.metadict['s'][i][val] > 1:
+                old = j, k
+                break
+        elif _type == 1:
+            y = random.randrange(9)
+            x = random.randrange(9)
+            b, val = sudoku.board[y][x]
+            if not b and sudoku.metadict['r'][y][val] > 1:
+                old = y, x
+                break
+        else:
+            y = random.randrange(9)
+            x = random.randrange(9)
+            b, val = sudoku.board[y][x]
+            if not b and sudoku.metadict['c'][x][val] > 1:
+                old = y, x
+                break
+        if counter > breakpoint:
+            while True:
+                y = random.randrange(9)
+                x = random.randrange(9)
+                if not sudoku.board[y][x][0]:
+                    old = y, x
+                    break
             break
 
     # new place
+    counter = 0
     while True:
-        y = random.randrange(9)
-        x = random.randrange(9)
-        if not sudoku.board[y][x][0]:
-            new = y, x
-            if old != new:
-                break
+        counter += 1
+        _type = random.randrange(3)
+        if _type == 0:
+            i = random.randrange(9)
+            y = i // 3 * 3
+            x = i % 3 * 3
+            j = random.randrange(y, y + 3)
+            k = random.randrange(x, x + 3)
+            b, val = sudoku.board[j][k]
+            if not b and sudoku.metadict['s'][i][val] > 1:
+                new = j, k
+                if old != new:
+                    break
+        elif _type == 1:
+            y = random.randrange(9)
+            x = random.randrange(9)
+            b, val = sudoku.board[y][x]
+            if not b and sudoku.metadict['r'][y][val] > 1:
+                new = y, x
+                if old != new:
+                    break
+        else:
+            y = random.randrange(9)
+            x = random.randrange(9)
+            b, val = sudoku.board[y][x]
+            if not b and sudoku.metadict['c'][x][val] > 1:
+                new = y, x
+                if old != new:
+                    break
+        if counter > breakpoint:
+            while True:
+                y = random.randrange(9)
+                x = random.randrange(9)
+                if not sudoku.board[y][x][0]:
+                    new = y, x
+                    if old != new:
+                        break
+            break
 
     return old, new
 
@@ -187,8 +224,8 @@ if __name__ == '__main__':
         [0, 0, 5, 0, 1, 0, 3, 0, 0],
     ]
     starting_sudoku = Sudoku(sudoku_board)
-    t0 = 10000
-    fun = partial(linear_additive_cooling, cooling_rate=0.00001)
+    t0 = 10
+    fun = partial(exponential_multiplicative_cooling, cooling_rate=0.00001)
     best, energy_mem = simulated_annealing((t0, fun),
                                            (starting_sudoku, arbitrary_swapping_candidate),
                                            (sudoku_swap, get_energy, sudoku_copy, 0))
