@@ -212,7 +212,7 @@ def sudoku_copy(sudoku):
 
 
 if __name__ == '__main__':
-    sudoku_board = [
+    sudoku_board_1 = [
         [0, 0, 3, 0, 2, 0, 6, 0, 0],
         [9, 0, 0, 3, 0, 5, 0, 0, 1],
         [0, 0, 1, 8, 0, 6, 4, 0, 0],
@@ -223,9 +223,21 @@ if __name__ == '__main__':
         [8, 0, 0, 2, 0, 3, 0, 0, 9],
         [0, 0, 5, 0, 1, 0, 3, 0, 0],
     ]
-    starting_sudoku = Sudoku(sudoku_board)
+    sudoku_board_2 = [
+        [8, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 3, 6, 0, 0, 0, 0, 0],
+        [0, 7, 0, 0, 9, 0, 2, 0, 0],
+        [0, 5, 0, 0, 0, 7, 0, 0, 0],
+        [0, 0, 0, 0, 4, 5, 7, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 3, 0],
+        [0, 0, 1, 0, 0, 0, 0, 6, 8],
+        [0, 0, 8, 5, 0, 0, 0, 1, 0],
+        [0, 9, 0, 0, 0, 0, 4, 0, 0],
+    ]
+
+    starting_sudoku = Sudoku(sudoku_board_2)
     t0 = 10
-    fun = partial(exponential_multiplicative_cooling, cooling_rate=0.00001)
+    fun = partial(exponential_multiplicative_cooling, cooling_rate=0.000001)
     best, energy_mem = simulated_annealing((t0, fun),
                                            (starting_sudoku, arbitrary_swapping_candidate),
                                            (sudoku_swap, get_energy, sudoku_copy, 0))
